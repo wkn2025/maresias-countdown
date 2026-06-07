@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maresias 🌊</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: #000;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+
+    #bg {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      z-index: 0;
+    }
+
+    #smoke {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Glow overlay elements */
+    .glow-overlay {
+      position: fixed;
+      pointer-events: none;
+      z-index: 2;
+      border-radius: 50%;
+    }
+
+    #ui {
+      position: fixed;
+      bottom: 6vh;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      text-align: center;
+      backdrop-filter: blur(12px) saturate(1.4);
+      -webkit-backdrop-filter: blur(12px) saturate(1.4);
+      background: rgba(10, 0, 30, 0.55);
+      border: 1px solid rgba(168, 85, 247, 0.4);
+      border-radius: 16px;
+      padding: 2rem 3rem;
+      min-width: 420px;
+    }
+
+    #ui h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      color: #fff;
+      text-transform: uppercase;
+      text-shadow: 0 0 20px #a855f7, 0 0 40px #7c3aed;
+    }
+
+    #ui .dates {
+      font-size: 1rem;
+      color: #c4b5fd;
+      letter-spacing: 0.12em;
+      margin-top: 0.3rem;
+      margin-bottom: 1.5rem;
+    }
+
+    #clock {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+    }
+
+    .clock-unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.2rem;
+    }
+
+    .clock-unit .num {
+      font-size: 3.5rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      font-family: 'Courier New', monospace;
+      color: #fff;
+      text-shadow: 0 0 12px #a855f7, 0 0 24px #7c3aed;
+      line-height: 1;
+    }
+
+    .clock-unit .label {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      color: #a855f7;
+      text-transform: uppercase;
+    }
+
+    #done {
+      display: none;
+      font-size: 1.8rem;
+      color: #fff;
+      text-shadow: 0 0 20px #a855f7;
+    }
+  </style>
+</head>
+<body>
+
+  <img id="bg" src="bg.jpg" alt="">
+  <canvas id="smoke"></canvas>
+
+  <!-- Glow overlays — positioned by JS after load -->
+  <div class="glow-overlay" id="glow-mush-1"></div>
+  <div class="glow-overlay" id="glow-mush-2"></div>
+  <div class="glow-overlay" id="glow-mush-3"></div>
+  <div class="glow-overlay" id="glow-mush-4"></div>
+  <div class="glow-overlay" id="glow-neon"></div>
+  <div class="glow-overlay" id="glow-totoro"></div>
+  <div class="glow-overlay" id="glow-light-1"></div>
+  <div class="glow-overlay" id="glow-light-2"></div>
+  <div class="glow-overlay" id="glow-light-3"></div>
+  <div class="glow-overlay" id="glow-light-4"></div>
+  <div class="glow-overlay" id="glow-light-5"></div>
+  <div class="glow-overlay" id="glow-light-6"></div>
+
+  <div id="ui">
+    <h1>Maresias</h1>
+    <p class="dates">9 – 12 de Julho</p>
+    <div id="clock">
+      <div class="clock-unit">
+        <span class="num" id="days">00</span>
+        <span class="label">Dias</span>
+      </div>
+      <div class="clock-unit">
+        <span class="num" id="hours">00</span>
+        <span class="label">Horas</span>
+      </div>
+      <div class="clock-unit">
+        <span class="num" id="mins">00</span>
+        <span class="label">Min</span>
+      </div>
+      <div class="clock-unit">
+        <span class="num" id="secs">00</span>
+        <span class="label">Seg</span>
+      </div>
+    </div>
+    <p id="done">🌊 Chegou a hora! Bora pra Maresias!</p>
+  </div>
+
+  <script>
+    // placeholder — filled in subsequent tasks
+  </script>
+</body>
+</html>
