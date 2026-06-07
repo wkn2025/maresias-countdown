@@ -112,6 +112,21 @@
       text-shadow: 0 0 20px #a855f7;
     }
 
+    @media (max-width: 480px) {
+      #ui {
+        min-width: unset;
+        width: 90vw;
+        padding: 1.1rem 1.4rem;
+        top: 14vh;
+      }
+      #ui h1 { font-size: 1.6rem; letter-spacing: 0.12em; }
+      #ui .dates { font-size: 0.75rem; margin-bottom: 0.9rem; }
+      #clock { gap: 0.8rem; }
+      .clock-unit .num { font-size: 2rem; }
+      .clock-unit .label { font-size: 0.55rem; }
+      #done { font-size: 1.1rem; }
+    }
+
     /* ── Mushroom pulse ── */
     @keyframes mushroomPulse {
       0%, 100% { box-shadow: 0 0 10px 4px rgba(168,85,247,0.5); opacity: 0.6; }
