@@ -241,7 +241,72 @@
     });
 
     // ── Smoke particle system ─────────────────────────────────────────────
-    // (filled in Task 3)
+    const canvas = document.getElementById('smoke');
+    const ctx = canvas.getContext('2d');
+
+    // Emitter position as % of viewport (incense stick location)
+    const EMITTER_X_PCT = 0.415;
+    const EMITTER_Y_PCT = 0.485;
+
+    function resize() {
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    class Particle {
+      constructor() { this.reset(); }
+      reset() {
+        this.x        = canvas.width  * EMITTER_X_PCT + (Math.random() - 0.5) * 4;
+        this.y        = canvas.height * EMITTER_Y_PCT;
+        this.vy       = -(0.6 + Math.random() * 0.6);
+        this.age      = 0;
+        this.lifetime = 100 + Math.random() * 40;
+        this.phase    = Math.random() * Math.PI * 2;
+        this.maxR     = 5 + Math.random() * 5;
+      }
+      update() {
+        this.age++;
+        this.y += this.vy;
+        this.x += Math.sin(this.age * 0.05 + this.phase) * 0.5;
+      }
+      get progress()  { return this.age / this.lifetime; }
+      get opacity()   { return 0.35 * (1 - this.progress); }
+      get radius()    { return 2 + (this.maxR - 2) * this.progress; }
+      get isDead()    { return this.age >= this.lifetime; }
+      draw() {
+        const g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
+        g.addColorStop(0, `rgba(210,190,255,${this.opacity})`);
+        g.addColorStop(1, `rgba(210,190,255,0)`);
+        ctx.beginPath();
+        ctx.fillStyle = g;
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    const particles = Array.from({ length: 12 }, () => {
+      const p = new Particle();
+      p.age = Math.floor(Math.random() * p.lifetime);
+      return p;
+    });
+
+    let frame = 0;
+    function animateSmoke() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      frame++;
+
+      if (frame % 8 === 0) {
+        const dead = particles.findIndex(p => p.isDead);
+        if (dead !== -1) particles[dead].reset();
+        else particles.push(new Particle());
+      }
+
+      particles.forEach(p => { p.update(); p.draw(); });
+      requestAnimationFrame(animateSmoke);
+    }
+    animateSmoke();
 
     // ── Countdown ─────────────────────────────────────────────────────────
     // (filled in Task 4)
