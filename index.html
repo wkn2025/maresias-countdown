@@ -309,7 +309,41 @@
     animateSmoke();
 
     // ── Countdown ─────────────────────────────────────────────────────────
-    // (filled in Task 4)
+    const TARGET = new Date('2025-07-09T18:00:00-03:00');
+
+    const elDays  = document.getElementById('days');
+    const elHours = document.getElementById('hours');
+    const elMins  = document.getElementById('mins');
+    const elSecs  = document.getElementById('secs');
+    const elClock = document.getElementById('clock');
+    const elDone  = document.getElementById('done');
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    function tick() {
+      const remaining = TARGET - Date.now();
+
+      if (remaining <= 0) {
+        elClock.style.display = 'none';
+        elDone.style.display  = 'block';
+        return;
+      }
+
+      const totalSecs = Math.floor(remaining / 1000);
+      const secs  = totalSecs % 60;
+      const mins  = Math.floor(totalSecs / 60) % 60;
+      const hours = Math.floor(totalSecs / 3600) % 24;
+      const days  = Math.floor(totalSecs / 86400);
+
+      elDays.textContent  = pad(days);
+      elHours.textContent = pad(hours);
+      elMins.textContent  = pad(mins);
+      elSecs.textContent  = pad(secs);
+
+      setTimeout(tick, 1000);
+    }
+
+    tick();
   </script>
 </body>
 </html>
