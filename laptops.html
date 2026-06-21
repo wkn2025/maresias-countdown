@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laptops até R$5.000 no Brasil</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: #0a0014;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      color: #e2d9f3;
+      padding: 2rem 1rem 4rem;
+    }
+
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #fff;
+      text-shadow: 0 0 20px #a855f7, 0 0 40px #7c3aed;
+    }
+
+    header p {
+      margin-top: 0.5rem;
+      color: #c4b5fd;
+      font-size: 0.9rem;
+      letter-spacing: 0.08em;
+    }
+
+    .back {
+      display: inline-block;
+      margin-bottom: 1.8rem;
+      color: #a855f7;
+      text-decoration: none;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+    .back:hover { opacity: 1; }
+
+    .criteria {
+      background: rgba(168, 85, 247, 0.08);
+      border: 1px solid rgba(168, 85, 247, 0.2);
+      border-radius: 12px;
+      padding: 1.2rem 1.5rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: #c4b5fd;
+      line-height: 1.7;
+    }
+
+    .criteria strong { color: #e9d5ff; }
+
+    .card {
+      background: rgba(10, 0, 30, 0.5);
+      border: 1px solid rgba(168, 85, 247, 0.22);
+      border-radius: 14px;
+      padding: 1.4rem 1.6rem;
+      margin-bottom: 1.2rem;
+      backdrop-filter: blur(6px);
+      transition: border-color 0.2s;
+    }
+    .card:hover { border-color: rgba(168, 85, 247, 0.5); }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #f3e8ff;
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.65rem;
+      border-radius: 20px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .badge-best  { background: rgba(168,85,247,0.25); color: #d8b4fe; border: 1px solid rgba(168,85,247,0.4); }
+    .badge-light { background: rgba(34,197,94,0.15);  color: #86efac;  border: 1px solid rgba(34,197,94,0.3);  }
+    .badge-value { background: rgba(251,191,36,0.15); color: #fcd34d;  border: 1px solid rgba(251,191,36,0.3);  }
+
+    .specs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .spec {
+      font-size: 0.78rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 6px;
+      padding: 0.2rem 0.55rem;
+      color: #d4c8ef;
+    }
+
+    .price {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #a855f7;
+      margin-bottom: 0.5rem;
+    }
+
+    .note {
+      font-size: 0.82rem;
+      color: #9d8fc0;
+      line-height: 1.5;
+    }
+
+    .note em { color: #c4b5fd; font-style: normal; }
+
+    .tip-box {
+      background: rgba(124, 58, 237, 0.1);
+      border: 1px solid rgba(124, 58, 237, 0.3);
+      border-radius: 12px;
+      padding: 1.2rem 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .tip-box h2 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #c4b5fd;
+      margin-bottom: 0.8rem;
+    }
+
+    .tip-box ul {
+      list-style: none;
+      font-size: 0.83rem;
+      color: #b09fd4;
+      line-height: 1.8;
+    }
+
+    .tip-box ul li::before {
+      content: '▸ ';
+      color: #a855f7;
+    }
+
+    .disclaimer {
+      margin-top: 1.5rem;
+      font-size: 0.75rem;
+      color: #6b5a8a;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 520px) {
+      header h1 { font-size: 1.4rem; }
+      .card { padding: 1.1rem 1.2rem; }
+      .card-title { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <a href="index.html" class="back">← Voltar pra Maresias</a>
+
+    <header>
+      <h1>Laptops até R$5.000</h1>
+      <p>Leves, fáceis de levar na mochila e prontos pra trabalho com Claude</p>
+    </header>
+
+    <div class="criteria">
+      <strong>Critérios:</strong> leve (abaixo de 1,6 kg), portátil pra viagem, foco em trabalho,
+      mínimo 8 GB RAM (16 GB ideal pra Claude + múltiplas abas), SSD NVMe, boa bateria.
+      Claude roda no browser — GPU não importa, mas RAM e velocidade de armazenamento sim.
+    </div>
+
+    <!-- 1 -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Acer Swift Go 14</span>
+        <span class="badge badge-light">Mais leve</span>
+      </div>
+      <div class="specs">
+        <span class="spec">~1,35 kg</span>
+        <span class="spec">14" FHD / OLED</span>
+        <span class="spec">Intel Core Ultra 5 / Ryzen 7000</span>
+        <span class="spec">16 GB RAM</span>
+        <span class="spec">512 GB NVMe</span>
+      </div>
+      <div class="price">~R$ 4.400 – R$ 5.000</div>
+      <p class="note">
+        O mais portátil da lista. Chassis de alumínio, USB-C com carga, bateria que passa tranquilo de 8h.
+        <em>Melhor escolha pra quem viaja bastante.</em>
+      </p>
+    </div>
+
+    <!-- 2 -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Lenovo IdeaPad Slim 5 Gen 9 (14")</span>
+        <span class="badge badge-best">Custo-benefício</span>
+      </div>
+      <div class="specs">
+        <span class="spec">~1,46 kg</span>
+        <span class="spec">14" FHD IPS</span>
+        <span class="spec">Ryzen 5 7530U / i5 12ª gen</span>
+        <span class="spec">8–16 GB RAM</span>
+        <span class="spec">512 GB NVMe</span>
+      </div>
+      <div class="price">~R$ 3.800 – R$ 4.800</div>
+      <p class="note">
+        Equilibrio perfeito entre preço, desempenho e peso. Procure a versão com
+        <em>16 GB de RAM</em> — vale o extra pra rodar Claude com muitas abas abertas.
+        Lenovo tem boa assistência técnica no Brasil.
+      </p>
+    </div>
+
+    <!-- 3 -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">ASUS VivoBook S 14 OLED</span>
+        <span class="badge badge-best">Melhor tela</span>
+      </div>
+      <div class="specs">
+        <span class="spec">~1,5 kg</span>
+        <span class="spec">14" 2.8K OLED 90Hz</span>
+        <span class="spec">Ryzen 5 7530U</span>
+        <span class="spec">8 GB RAM</span>
+        <span class="spec">512 GB NVMe</span>
+      </div>
+      <div class="price">~R$ 4.200 – R$ 5.000</div>
+      <p class="note">
+        A tela OLED muda a experiência pra quem trabalha muito com texto e código.
+        RAM soldada em 8 GB — verifique se o modelo vendido no Brasil
+        <em>tem slot adicional</em> antes de comprar.
+      </p>
+    </div>
+
+    <!-- 4 -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Samsung Galaxy Book4 (15")</span>
+        <span class="badge badge-best">Melhor suporte BR</span>
+      </div>
+      <div class="specs">
+        <span class="spec">~1,55 kg</span>
+        <span class="spec">15.6" FHD</span>
+        <span class="spec">Intel Core i5-1335U</span>
+        <span class="spec">8 GB RAM</span>
+        <span class="spec">256 GB NVMe</span>
+      </div>
+      <div class="price">~R$ 3.500 – R$ 4.500</div>
+      <p class="note">
+        Samsung tem a <em>melhor rede de assistência técnica no Brasil</em> — diferencial importante pra quem viaja.
+        Tela grande facilita trabalho. Considere um upgrade de SSD depois da compra; 256 GB aperta rápido.
+      </p>
+    </div>
+
+    <!-- 5 -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Acer Aspire 5 (14" AMD)</span>
+        <span class="badge badge-value">Mais barato</span>
+      </div>
+      <div class="specs">
+        <span class="spec">~1,45 kg</span>
+        <span class="spec">14" FHD IPS</span>
+        <span class="spec">Ryzen 5 5500U / 7520U</span>
+        <span class="spec">8 GB RAM</span>
+        <span class="spec">512 GB NVMe</span>
+      </div>
+      <div class="price">~R$ 2.800 – R$ 3.800</div>
+      <p class="note">
+        Sobra dinheiro no orçamento. Claude roda perfeitamente no browser com esse hardware.
+        <em>Use a diferença pra comprar um carregador reserva e um HUB USB-C</em> — essenciais pra viagem.
+      </p>
+    </div>
+
+    <div class="tip-box">
+      <h2>Dicas antes de comprar</h2>
+      <ul>
+        <li>16 GB RAM é o ideal — Claude + Slack + VS Code + browser abrem pesado</li>
+        <li>Prefira USB-C com carregamento (mais fácil em viagem, um cabo a menos)</li>
+        <li>Verifique se a RAM é soldada ou tem slot livre pra upgrade futuro</li>
+        <li>Fora das promoções (Black Friday, Amazon Prime Day) os preços sobem 15–20%</li>
+        <li>Para Claude Code, o único requisito real é conexão estável — não precisa de GPU</li>
+        <li>Compre com nota fiscal — essencial pra garantia e reembolso de ICMS em alguns estados</li>
+        <li>Peso abaixo de 1,5 kg faz diferença real depois de 4h andando com a mochila</li>
+      </ul>
+    </div>
+
+    <p class="disclaimer">
+      Preços aproximados baseados no mercado brasileiro de 2025. Valores flutuam com o dólar —
+      confirme sempre no site do varejista antes de comprar.
+      Kabum, Amazon BR, Fast Shop e Magazine Luiza costumam ter boas promoções.
+    </p>
+
+  </div>
+</body>
+</html>
