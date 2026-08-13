@@ -16,10 +16,10 @@ Terms are used strictly as defined here for the rest of the document.
 | Term | Meaning in this document |
 | --- | --- |
 | **Provider invoice** | The financial document created from an incoming provider claim (837). The object that gets settled/paid. |
-| **Corresponding fees** | Fee records generated from a provider invoice. They carry their own status (Pending / Pay / Settled-Paid) and their own payment eligibility. |
+| **Corresponding fees** | Fee records generated from a provider invoice. They carry their own status (Pending / Pay / Settled) and their own payment eligibility. |
 | **Original invoice** | The provider invoice referenced by the incoming V&R, identified via the `NTE*ADD` claim reference. The version being superseded. |
 | **Replacement invoice** | The provider invoice carried by the incoming V&R 837. The version that should supersede the original. |
-| **Globo** | The system the invoice is uploaded into and where it progresses through Pending → Pay → Settled/Paid, and where a void/refund is applied. |
+| **Globo** | The system the invoice is uploaded into and where it progresses through Pending → Pay → Settled, and where a void/refund is applied. |
 | **Missing GOP / Missing Claim UI** | Pre-Globo intake queues in the user interface. An invoice sitting here has not yet been uploaded into Globo; a user must create a GOP and supply the required ID to move it forward. |
 | **Automatic Refund** | The existing automated reversal the V&R automation performs on a **settled** provider invoice. It acts on the provider invoice only. |
 | **Manual intervention** | Any action the Billing team must perform by hand because the automation does not perform it. |
@@ -53,12 +53,18 @@ original has been located.
 
 ## 3. Scenario comparison matrix (main view)
 
-| # | Original invoice state | Corresponding fees state | Current — original invoice | Current — fees | Current — replacement invoice | Expected | Manual intervention today |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| **S1** | Settled / Paid (in Globo) | Settled / Paid | **Automatic Refund applied** — identified via `NTE*ADD`, refunded | **Not refunded** — left as paid (confirmed with Billing) | Can be processed after the refund | Refund provider invoice **and** automatically refund/void the corresponding fees — reversed together as one financial transaction | Billing manually refunds the fees of the original invoice |
-| **S2** | Settled / Paid (in Globo) | Pending or Pay (created, not settled) | **Automatic Refund applied** | **Untouched** — remain in Pending/Pay and therefore **still eligible for payment** | Can be processed after the refund | Refund provider invoice **and** automatically void any fees still in Pending/Pay — they belong to a superseded invoice version | Billing manually identifies and voids the fees created for the original invoice |
-| **S3** | Pending or Pay, already in Globo | n/a to the described flow | **Not voided** — remains active in Globo | — | **Treated as a new invoice.** Lands in Missing GOP / Missing Claim UI; user creates a new GOP, enters the required ID, uploads into Globo. Upload does **not** void the original → **both versions coexist in Globo** | Identify original via V&R reference → automatically void it → create/upload the replacement → replacement is the only version valid for further processing/payment | Billing manually voids the original invoice in Globo to prevent duplicate payment |
-| **S4** | Not yet in Globo — sitting in Missing GOP and/or Missing Claim UI | n/a to the described flow | **No automated connection** between the original UI item and the replacement | — | Appears in the UI as **another new invoice**; both versions remain available for processing | Recognize from the V&R reference that the incoming invoice supersedes an item already in intake → **if still in the UI:** cancel/remove the original from processing; **if already uploaded into Globo:** void the original. Replacement becomes the active version. System prevents both versions progressing independently | If Billing recognizes the V&R: manually remove the original UI item, **or** — if the original has already reached Globo by then — manually void it in Globo |
+One row per lifecycle state of the original invoice when the V&R arrives — the variable that
+determines everything else. One column per object. Inside each cell, what happens today sits
+directly above what should happen, so the gap is the difference between the two lines.
+
+`✓` works as intended today  ·  `✗` gap  ·  `→` what should happen instead (shown only where it differs)
+
+| Scenario — state when the V&R arrives | Original invoice | Corresponding fees | Replacement invoice | Manual intervention today |
+| --- | --- | --- | --- | --- |
+| **S1**<br>*Original* Settled<br>*Fees* Settled | ✓ Identified via `NTE*ADD` and **refunded automatically**. | ✗ **Not refunded** — they stay paid. Confirmed with Billing.<br>→ *Refund together with the invoice — one reversal.* | ✓ Processes after the refund. | Billing refunds the fees of the original invoice by hand. |
+| **S2**<br>*Original* Settled<br>*Fees* Pending or Pay | ✓ Identified and **refunded automatically**. | ✗ **Untouched** in Pending/Pay — still eligible for payment.<br>→ *Void them with the invoice; they belong to the superseded version.* | ✓ Processes after the refund. | Billing identifies and voids the fees created for the original. |
+| **S3**<br>*Original* Pending or Pay, in Globo<br>*Fees* — | ✗ **Never voided** — stays active in Globo.<br>→ *Void it automatically from the V&R reference.* | — | ✗ Enters as a **new invoice** via Missing GOP / Missing Claim; the user creates a GOP and uploads it. Both versions then live in Globo.<br>→ *Created as the only version valid for processing/payment.* | Billing voids the original in Globo to stop duplicate payment. |
+| **S4**<br>*Original* Missing GOP / Missing Claim UI, not yet in Globo<br>*Fees* — | ✗ **No link** between the original UI item and the replacement.<br>→ *Cancel the UI item — or void it in Globo if it got there first.* | — | ✗ Appears as a **separate new invoice**; both stay available for processing.<br>→ *Becomes the active version; the two can never progress independently.* | Billing removes the UI item, or voids in Globo — only if someone spots the V&R. |
 
 **Severity read:** S1 leaves an unrecovered fee payment. S2, S3 and S4 leave a *payable* artifact
 alive (unpaid fees, or a whole second invoice) — i.e. active duplicate-payment exposure that is
@@ -70,7 +76,7 @@ caught only by a human noticing.
 
 ### S1 — Provider invoice and corresponding fees already settled
 
-**Initial state:** provider invoice Settled/Paid; corresponding fees Settled/Paid.
+**Initial state:** provider invoice Settled; corresponding fees Settled.
 
 | Current behavior | Expected behavior |
 | --- | --- |
@@ -81,7 +87,7 @@ original invoice.
 
 ### S2 — Provider invoice settled, fees created but not yet settled
 
-**Initial state:** provider invoice Settled/Paid; corresponding fees Pending or Pay.
+**Initial state:** provider invoice Settled; corresponding fees Pending or Pay.
 
 | Current behavior | Expected behavior |
 | --- | --- |
@@ -128,8 +134,8 @@ flowchart LR
     subgraph LC["Lifecycle of the original invoice"]
       direction LR
       UI["Missing GOP /<br/>Missing Claim UI"] -->|GOP created, ID entered, upload| G["Globo<br/>Pending / Pay"]
-      G -->|settlement| P["Globo<br/>Settled / Paid"]
-      P -->|generates| F["Corresponding fees<br/>Paid · or · Pending/Pay"]
+      G -->|settlement| P["Globo<br/>Settled"]
+      P -->|generates| F["Corresponding fees<br/>Settled · or · Pending/Pay"]
     end
 
     VR -.->|S4: no link — replacement enters as a new UI item| UI
@@ -149,10 +155,10 @@ flowchart TD
 
     C -->|In Missing GOP / Missing Claim UI| D["Cancel / remove original UI item"]
     C -->|In Globo, Pending or Pay| E["Void original invoice in Globo"]
-    C -->|Settled / Paid| F["Automatic Refund on provider invoice"]
+    C -->|Settled| F["Automatic Refund on provider invoice"]
 
     F --> G{"Corresponding fees status?"}
-    G -->|Settled / Paid| H["Refund / void fees"]
+    G -->|Settled| H["Refund / void fees"]
     G -->|Pending or Pay| I["Void fees"]
 
     D --> Z["Replacement is the only active version"]
@@ -202,9 +208,9 @@ IF incoming 837 is identified as V&R
   → neutralize original invoice appropriately
       state = Missing GOP / Missing Claim UI  → cancel / remove item from processing
       state = Globo, Pending or Pay           → void original invoice
-      state = Globo, Settled / Paid           → Automatic Refund on provider invoice
+      state = Globo, Settled                  → Automatic Refund on provider invoice
   → neutralize associated fees where applicable
-      fees Settled / Paid    → refund / void fees
+      fees Settled           → refund / void fees
       fees Pending or Pay    → void fees
   → process replacement as the only active version
   → prevent duplicate payment exposure

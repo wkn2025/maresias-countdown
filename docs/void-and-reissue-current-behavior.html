@@ -213,15 +213,12 @@
     background: var(--surface);
   }
   table { border-collapse: collapse; width: 100%; font-size: .82rem; }
-  .matrix { min-width: 1302px; table-layout: fixed; }
-  .matrix th:nth-child(1) { width: 124px; }
-  .matrix th:nth-child(2) { width: 112px; }
-  .matrix th:nth-child(3) { width: 132px; }
-  .matrix th:nth-child(4) { width: 150px; }
-  .matrix th:nth-child(5) { width: 150px; }
-  .matrix th:nth-child(6) { width: 210px; }
-  .matrix th:nth-child(7) { width: 238px; }
-  .matrix th:nth-child(8) { width: 186px; }
+  .matrix { min-width: 880px; table-layout: fixed; }
+  .matrix th:nth-child(1) { width: 14.5%; }
+  .matrix th:nth-child(2) { width: 19.5%; }
+  .matrix th:nth-child(3) { width: 19.5%; }
+  .matrix th:nth-child(4) { width: 24%;   }
+  .matrix th:nth-child(5) { width: 22.5%; }
   th, td { text-align: left; vertical-align: top; padding: .7rem .8rem; border-bottom: 1px solid var(--rule-soft); overflow-wrap: break-word; }
   thead th {
     position: sticky;
@@ -244,11 +241,47 @@
   }
   td.sid.sev-high { border-left-color: var(--crit); }
   td.sid.sev-mid  { border-left-color: var(--gap); }
-  td.sid b { font-size: .95rem; display: block; margin-bottom: .2rem; }
-  td.sid span { color: var(--ink-3); font-size: .7rem; letter-spacing: .05em; text-transform: uppercase; }
-  td.cur { background: var(--gap-soft); }
-  td.exp { background: var(--ok-soft); }
-  td.state { color: var(--ink-2); }
+  td.sid b { font-size: .95rem; display: block; margin-bottom: .35rem; }
+  td.sid span { display: block; color: var(--ink-2); font-size: .72rem; letter-spacing: .02em; }
+  td.sid span i { font-style: normal; color: var(--ink-3); }
+
+  /* two-line cell: what happens today, then what should happen */
+  .now, .then { display: grid; grid-template-columns: 1.15rem 1fr; gap: .3rem; align-items: start; }
+  .now { font-size: .84rem; line-height: 1.45; }
+  .then {
+    font-size: .78rem;
+    line-height: 1.45;
+    color: var(--ink-2);
+    margin-top: .4rem;
+    padding-top: .4rem;
+    border-top: 1px dotted var(--rule);
+  }
+  .now .mk { font-family: var(--font-mono); font-weight: 700; font-size: .8rem; line-height: 1.55; }
+  .then .mk { color: var(--accent); font-family: var(--font-mono); line-height: 1.5; }
+  .now.is-gap  .mk { color: var(--gap); }
+  .now.is-crit .mk { color: var(--crit); }
+  .now.is-ok   .mk { color: var(--ok); }
+  .now.is-gap  b, .now.is-crit b { color: var(--ink); }
+  td.nil { color: var(--ink-3); }
+  .manual-do { font-size: .84rem; line-height: 1.45; }
+  .matrix tbody tr:hover td { background: var(--rule-soft); }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem 1.4rem;
+    font-family: var(--font-mono);
+    font-size: .7rem;
+    letter-spacing: .04em;
+    color: var(--ink-2);
+    padding: .1rem 0;
+  }
+  .legend span { display: inline-flex; align-items: center; gap: .4rem; }
+  .legend .mk { font-weight: 700; }
+  .legend .g { color: var(--gap); }
+  .legend .c { color: var(--crit); }
+  .legend .o { color: var(--ok); }
+  .legend .a { color: var(--accent); }
 
   .chip {
     display: inline-block;
@@ -429,7 +462,7 @@
       <div class="term">
         <dt>Corresponding fees</dt>
         <dd>Fee records generated from a provider invoice. They carry their own status
-          (Pending / Pay / Settled&ndash;Paid) and their own payment eligibility.</dd>
+          (Pending / Pay / Settled) and their own payment eligibility.</dd>
       </div>
       <div class="term">
         <dt>Original invoice</dt>
@@ -444,7 +477,7 @@
       <div class="term">
         <dt>Globo</dt>
         <dd>The system the invoice is uploaded into, where it moves Pending &rarr; Pay &rarr;
-          Settled/Paid, and where a void or refund is applied.</dd>
+          Settled, and where a void or refund is applied.</dd>
       </div>
       <div class="term">
         <dt>Missing GOP / Missing Claim UI</dt>
@@ -500,87 +533,135 @@ NTE*ADD*Rplcmnt fr Voided Clm <span class="v">13630117</span>~</pre>
     <div class="sec-head">
       <p class="eyebrow">03 &middot; Main view</p>
       <h2>Scenario comparison matrix</h2>
-      <p class="prose">Rows are keyed by the lifecycle state of the original invoice when the
-        V&amp;R arrives &mdash; the variable that determines everything else. Left stripe marks
-        exposure: <span class="chip crit">duplicate payment possible</span>
-        <span class="chip gap">value not recovered</span></p>
+      <p class="prose">One row per lifecycle state of the original invoice when the V&amp;R arrives
+        &mdash; the variable that determines everything else. One column per object. Inside each
+        cell, what happens today sits directly above what should happen, so the gap is the
+        difference between the two lines.</p>
+    </div>
+
+    <div class="legend">
+      <span><b class="mk o">&#10003;</b> works as intended today</span>
+      <span><b class="mk g">&#10007;</b> gap &mdash; value not recovered</span>
+      <span><b class="mk c">&#10007;</b> gap &mdash; duplicate payment possible</span>
+      <span><b class="mk a">&rarr;</b> what should happen instead &mdash; shown only where it differs</span>
     </div>
 
     <div class="scroll">
       <table class="matrix">
         <thead>
           <tr>
-            <th scope="col">Scenario</th>
-            <th scope="col">Original invoice state</th>
+            <th scope="col">Scenario &mdash; state when the V&amp;R arrives</th>
+            <th scope="col">Original invoice</th>
             <th scope="col">Corresponding fees</th>
-            <th scope="col">Current &mdash; original invoice</th>
-            <th scope="col">Current &mdash; fees</th>
-            <th scope="col">Current &mdash; replacement invoice</th>
-            <th scope="col">Expected</th>
+            <th scope="col">Replacement invoice</th>
             <th scope="col">Manual intervention today</th>
           </tr>
         </thead>
         <tbody>
+
           <tr>
-            <td class="sid sev-mid"><b>S1</b><span>Paid / fees paid</span></td>
-            <td class="state">Settled / Paid in Globo</td>
-            <td class="state">Settled / Paid</td>
-            <td class="cur"><span class="chip ok">handled</span><br>Identified via <code>NTE*ADD</code>,
-              <b>Automatic Refund</b> applied.</td>
-            <td class="cur"><span class="chip gap">gap</span><br><b>Not refunded.</b> Fees remain
-              paid. Confirmed with the Billing team.</td>
-            <td class="cur">Can be processed after the refund.</td>
-            <td class="exp">Refund the provider invoice <b>and</b> automatically refund/void the
-              corresponding fees. The original financial transaction and its fees are reversed
-              together.</td>
-            <td>Billing manually refunds the fees associated with the original invoice.</td>
+            <td class="sid sev-mid">
+              <b>S1</b>
+              <span><i>Original</i> Settled</span>
+              <span><i>Fees</i> Settled</span>
+            </td>
+            <td>
+              <p class="now is-ok"><span class="mk">&#10003;</span><span>Identified via
+                <code>NTE*ADD</code> and <b>refunded automatically</b>.</span></p>
+            </td>
+            <td>
+              <p class="now is-gap"><span class="mk">&#10007;</span><span><b>Not refunded</b> &mdash;
+                they stay paid. Confirmed with Billing.</span></p>
+              <p class="then"><span class="mk">&rarr;</span><span>Refund together with the invoice
+                &mdash; one reversal.</span></p>
+            </td>
+            <td>
+              <p class="now is-ok"><span class="mk">&#10003;</span><span>Processes after the
+                refund.</span></p>
+            </td>
+            <td>
+              <p class="manual-do">Billing refunds the fees of
+                the original invoice by hand.</p>
+            </td>
           </tr>
+
           <tr>
-            <td class="sid sev-high"><b>S2</b><span>Paid / fees unpaid</span></td>
-            <td class="state">Settled / Paid in Globo</td>
-            <td class="state">Pending or Pay &mdash; created, not settled</td>
-            <td class="cur"><span class="chip ok">handled</span><br>Identified, <b>Automatic
-              Refund</b> applied.</td>
-            <td class="cur"><span class="chip crit">gap</span><br><b>Untouched</b> in Pending/Pay
-              &mdash; still eligible for payment against a voided invoice.</td>
-            <td class="cur">Can be processed after the refund.</td>
-            <td class="exp">Refund the provider invoice <b>and</b> automatically void any fees still
-              in Pending/Pay &mdash; they belong to the superseded version.</td>
-            <td>Billing manually identifies and voids the fees created for the original invoice.</td>
+            <td class="sid sev-high">
+              <b>S2</b>
+              <span><i>Original</i> Settled</span>
+              <span><i>Fees</i> Pending or Pay</span>
+            </td>
+            <td>
+              <p class="now is-ok"><span class="mk">&#10003;</span><span>Identified and <b>refunded
+                automatically</b>.</span></p>
+            </td>
+            <td>
+              <p class="now is-crit"><span class="mk">&#10007;</span><span><b>Untouched</b> in
+                Pending/Pay &mdash; still eligible for payment.</span></p>
+              <p class="then"><span class="mk">&rarr;</span><span>Void them with the invoice; they
+                belong to the superseded version.</span></p>
+            </td>
+            <td>
+              <p class="now is-ok"><span class="mk">&#10003;</span><span>Processes after the
+                refund.</span></p>
+            </td>
+            <td>
+              <p class="manual-do">Billing identifies and
+                voids the fees created for the original.</p>
+            </td>
           </tr>
+
           <tr>
-            <td class="sid sev-high"><b>S3</b><span>Live in Globo</span></td>
-            <td class="state">Pending or Pay, already in Globo</td>
-            <td class="state">&mdash; not part of the described flow</td>
-            <td class="cur"><span class="chip crit">gap</span><br><b>Not voided.</b> Remains active
-              in Globo.</td>
-            <td class="cur">&mdash;</td>
-            <td class="cur"><span class="chip crit">gap</span><br>Treated as a <b>new invoice</b>:
-              lands in Missing GOP / Missing Claim, user creates a GOP, enters the required ID,
-              uploads to Globo. The upload does <b>not</b> void the original &mdash; both versions
-              coexist in Globo.</td>
-            <td class="exp">Identify the original via the V&amp;R reference &rarr; automatically void
-              it &rarr; create/upload the replacement &rarr; only the replacement is valid for
-              further processing/payment.</td>
-            <td>Billing manually voids the original invoice in Globo to prevent duplicate
-              payment.</td>
+            <td class="sid sev-high">
+              <b>S3</b>
+              <span><i>Original</i> Pending or Pay, in Globo</span>
+              <span><i>Fees</i> &mdash;</span>
+            </td>
+            <td>
+              <p class="now is-crit"><span class="mk">&#10007;</span><span><b>Never voided</b> &mdash;
+                stays active in Globo.</span></p>
+              <p class="then"><span class="mk">&rarr;</span><span>Void it automatically from the
+                V&amp;R reference.</span></p>
+            </td>
+            <td class="nil">&mdash;</td>
+            <td>
+              <p class="now is-crit"><span class="mk">&#10007;</span><span>Enters as a <b>new
+                invoice</b> via Missing GOP / Missing Claim; the user creates a GOP and uploads it.
+                Both versions then live in Globo.</span></p>
+              <p class="then"><span class="mk">&rarr;</span><span>Created as the only version valid
+                for processing/payment.</span></p>
+            </td>
+            <td>
+              <p class="manual-do">Billing voids the original
+                in Globo to stop duplicate payment.</p>
+            </td>
           </tr>
+
           <tr>
-            <td class="sid sev-high"><b>S4</b><span>Still in intake UI</span></td>
-            <td class="state">Not yet in Globo &mdash; in Missing GOP and/or Missing Claim UI</td>
-            <td class="state">&mdash; not part of the described flow</td>
-            <td class="cur"><span class="chip crit">gap</span><br><b>No automated connection</b>
-              between the original UI item and the replacement.</td>
-            <td class="cur">&mdash;</td>
-            <td class="cur"><span class="chip crit">gap</span><br>Appears in the UI as another new
-              invoice. Both versions remain available for processing.</td>
-            <td class="exp">Recognize from the V&amp;R reference that the incoming invoice supersedes
-              an item already in intake. <b>Still in UI:</b> cancel/remove the original from
-              processing. <b>Already in Globo:</b> void the original. Replacement becomes the active
-              version; both versions must never progress independently.</td>
-            <td>Only if Billing recognizes the V&amp;R: manually remove the original UI item, or
-              &mdash; if it already reached Globo &mdash; manually void it there.</td>
+            <td class="sid sev-high">
+              <b>S4</b>
+              <span><i>Original</i> Missing GOP / Missing Claim UI, not yet in Globo</span>
+              <span><i>Fees</i> &mdash;</span>
+            </td>
+            <td>
+              <p class="now is-crit"><span class="mk">&#10007;</span><span><b>No link</b> between the
+                original UI item and the replacement.</span></p>
+              <p class="then"><span class="mk">&rarr;</span><span>Cancel the UI item &mdash; or void
+                it in Globo if it got there first.</span></p>
+            </td>
+            <td class="nil">&mdash;</td>
+            <td>
+              <p class="now is-crit"><span class="mk">&#10007;</span><span>Appears as a <b>separate
+                new invoice</b>; both stay available for processing.</span></p>
+              <p class="then"><span class="mk">&rarr;</span><span>Becomes the active version; the two
+                can never progress independently.</span></p>
+            </td>
+            <td>
+              <p class="manual-do">Billing removes the UI
+                item, or voids in Globo &mdash; only if someone spots the V&amp;R.</p>
+            </td>
           </tr>
+
         </tbody>
       </table>
     </div>
@@ -648,7 +729,7 @@ NTE*ADD*Rplcmnt fr Voided Clm <span class="v">13630117</span>~</pre>
 
             <rect x="640" y="160" width="260" height="64" rx="4" fill="var(--surface)" stroke="var(--rule)" stroke-width="1.5"/>
             <text x="770" y="186" text-anchor="middle" font-size="12.5" font-weight="600" fill="var(--ink)">Globo</text>
-            <text x="770" y="204" text-anchor="middle" class="m" font-size="11" fill="var(--ink-2)">Settled / Paid</text>
+            <text x="770" y="204" text-anchor="middle" class="m" font-size="11" fill="var(--ink-2)">Settled</text>
 
             <!-- progression -->
             <path d="M 274 192 L 332 192" stroke="var(--ink-3)" stroke-width="1.2" fill="none" marker-end="url(#cur-step)"/>
@@ -661,7 +742,7 @@ NTE*ADD*Rplcmnt fr Voided Clm <span class="v">13630117</span>~</pre>
             <text x="762" y="246" text-anchor="end" class="m" font-size="10" fill="var(--ink-3)">generates</text>
             <rect x="640" y="258" width="260" height="52" rx="4" fill="var(--surface)" stroke="var(--rule)" stroke-width="1.5"/>
             <text x="770" y="280" text-anchor="middle" font-size="12.5" font-weight="600" fill="var(--ink)">Corresponding fees</text>
-            <text x="770" y="297" text-anchor="middle" class="m" font-size="11" fill="var(--ink-2)">Paid (S1) &nbsp;&middot;&nbsp; Pending / Pay (S2)</text>
+            <text x="770" y="297" text-anchor="middle" class="m" font-size="11" fill="var(--ink-2)">Settled (S1) &nbsp;&middot;&nbsp; Pending / Pay (S2)</text>
           </svg>
         </div>
         <figcaption><b>Current.</b> The <code>NTE*ADD</code> reference produces an action in one
@@ -714,7 +795,7 @@ NTE*ADD*Rplcmnt fr Voided Clm <span class="v">13630117</span>~</pre>
 
             <rect x="640" y="160" width="260" height="64" rx="4" fill="var(--surface)" stroke="var(--rule)" stroke-width="1.5"/>
             <text x="770" y="186" text-anchor="middle" font-size="12.5" font-weight="600" fill="var(--ink)">Globo</text>
-            <text x="770" y="204" text-anchor="middle" class="m" font-size="11" fill="var(--ink-2)">Settled / Paid</text>
+            <text x="770" y="204" text-anchor="middle" class="m" font-size="11" fill="var(--ink-2)">Settled</text>
 
             <!-- progression -->
             <path d="M 274 192 L 332 192" stroke="var(--ink-3)" stroke-width="1.2" fill="none" marker-end="url(#exp-step)"/>
@@ -727,7 +808,7 @@ NTE*ADD*Rplcmnt fr Voided Clm <span class="v">13630117</span>~</pre>
             <text x="762" y="246" text-anchor="end" class="m" font-size="10" fill="var(--ink-3)">generates</text>
             <rect x="640" y="258" width="260" height="52" rx="4" fill="var(--surface)" stroke="var(--rule)" stroke-width="1.5"/>
             <text x="770" y="280" text-anchor="middle" font-size="12.5" font-weight="600" fill="var(--ink)">Corresponding fees</text>
-            <text x="770" y="297" text-anchor="middle" class="m" font-size="11" fill="var(--ink-2)">Paid (S1) &nbsp;&middot;&nbsp; Pending / Pay (S2)</text>
+            <text x="770" y="297" text-anchor="middle" class="m" font-size="11" fill="var(--ink-2)">Settled (S1) &nbsp;&middot;&nbsp; Pending / Pay (S2)</text>
           </svg>
         </div>
         <figcaption><b>Expected.</b> The reference resolves once, then dispatches on the original's
@@ -763,8 +844,8 @@ NTE*ADD*Rplcmnt fr Voided Clm <span class="v">13630117</span>~</pre>
           <span class="chip gap">value not recovered</span>
         </div>
         <div class="init">
-          <span><b>Provider invoice:</b> Settled / Paid</span>
-          <span><b>Corresponding fees:</b> Settled / Paid</span>
+          <span><b>Provider invoice:</b> Settled</span>
+          <span><b>Corresponding fees:</b> Settled</span>
         </div>
         <div class="pair">
           <div class="pane cur">
@@ -798,7 +879,7 @@ NTE*ADD*Rplcmnt fr Voided Clm <span class="v">13630117</span>~</pre>
           <span class="chip crit">duplicate payment possible</span>
         </div>
         <div class="init">
-          <span><b>Provider invoice:</b> Settled / Paid</span>
+          <span><b>Provider invoice:</b> Settled</span>
           <span><b>Corresponding fees:</b> Pending or Pay</span>
         </div>
         <div class="pair">
@@ -994,10 +1075,10 @@ NTE*ADD*Rplcmnt fr Voided Clm <span class="v">13630117</span>~</pre>
   &rarr; <span class="k">neutralize</span> original invoice appropriately
         state = <span class="v">Missing GOP / Missing Claim UI</span>  &rarr; cancel / remove item from processing
         state = <span class="v">Globo, Pending or Pay</span>           &rarr; void original invoice
-        state = <span class="v">Globo, Settled / Paid</span>           &rarr; Automatic Refund on provider invoice
+        state = <span class="v">Globo, Settled</span>                  &rarr; Automatic Refund on provider invoice
 
   &rarr; <span class="k">neutralize</span> associated fees where applicable
-        fees  = <span class="v">Settled / Paid</span>                  &rarr; refund / void fees
+        fees  = <span class="v">Settled</span>                         &rarr; refund / void fees
         fees  = <span class="v">Pending or Pay</span>                  &rarr; void fees
 
   &rarr; <span class="k">process</span> replacement as the only active version
