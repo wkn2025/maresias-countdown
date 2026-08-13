@@ -1,0 +1,1039 @@
+<title>Void &amp; Reissue Gap Map</title>
+
+<style>
+  :root {
+    --bg:         #F1F4F5;
+    --surface:    #FFFFFF;
+    --surface-2:  #E8EEF0;
+    --ink:        #131C22;
+    --ink-2:      #4E626E;
+    --ink-3:      #788B96;
+    --rule:       #D5DEE2;
+    --rule-soft:  #E4EAED;
+    --accent:     #15616D;
+    --accent-2:   #0E4650;
+    --accent-soft:#DBEDEF;
+    --gap:        #92560F;
+    --gap-soft:   #F6E8D3;
+    --crit:       #94302E;
+    --crit-soft:  #F7E1DF;
+    --ok:         #2B6A4E;
+    --ok-soft:    #DCEDE3;
+    --shadow:     0 1px 2px rgba(19, 28, 34, .06), 0 8px 24px -18px rgba(19, 28, 34, .5);
+
+    --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    --font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:         #0D1418;
+      --surface:    #141D22;
+      --surface-2:  #1B262C;
+      --ink:        #E1E9EC;
+      --ink-2:      #9FB1BB;
+      --ink-3:      #7C8E99;
+      --rule:       #26333B;
+      --rule-soft:  #1E2A31;
+      --accent:     #5FC2CD;
+      --accent-2:   #8AD6DE;
+      --accent-soft:#12343A;
+      --gap:        #DFA45C;
+      --gap-soft:   #352715;
+      --crit:       #E98D88;
+      --crit-soft:  #391F1E;
+      --ok:         #74C79D;
+      --ok-soft:    #16301F;
+      --shadow:     0 1px 2px rgba(0, 0, 0, .4), 0 10px 28px -20px rgba(0, 0, 0, .9);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg:         #0D1418;
+    --surface:    #141D22;
+    --surface-2:  #1B262C;
+    --ink:        #E1E9EC;
+    --ink-2:      #9FB1BB;
+    --ink-3:      #7C8E99;
+    --rule:       #26333B;
+    --rule-soft:  #1E2A31;
+    --accent:     #5FC2CD;
+    --accent-2:   #8AD6DE;
+    --accent-soft:#12343A;
+    --gap:        #DFA45C;
+    --gap-soft:   #352715;
+    --crit:       #E98D88;
+    --crit-soft:  #391F1E;
+    --ok:         #74C79D;
+    --ok-soft:    #16301F;
+    --shadow:     0 1px 2px rgba(0, 0, 0, .4), 0 10px 28px -20px rgba(0, 0, 0, .9);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: clamp(2rem, 5vw, 4.5rem) clamp(1rem, 4vw, 2.5rem) 6rem;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2.75rem, 5vw, 4rem);
+  }
+
+  .prose { max-width: 70ch; }
+
+  /* ---------- type ---------- */
+
+  h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; text-wrap: balance; margin: 0; }
+  h1 { font-size: clamp(2rem, 4.6vw, 3rem); line-height: 1.08; letter-spacing: -.015em; }
+  h2 { font-size: clamp(1.4rem, 2.6vw, 1.8rem); line-height: 1.15; letter-spacing: -.01em; }
+  h3 { font-size: 1.15rem; line-height: 1.25; }
+  h4 { font-size: 1rem; font-family: var(--font-body); font-weight: 650; }
+  p  { margin: 0; }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: .7rem;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  code, .mono { font-family: var(--font-mono); font-size: .875em; }
+  code {
+    background: var(--surface-2);
+    border: 1px solid var(--rule-soft);
+    border-radius: 3px;
+    padding: .08em .32em;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  strong { font-weight: 650; }
+
+  /* ---------- header ---------- */
+
+  header.doc {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid var(--ink);
+  }
+  .standfirst { font-size: 1.1rem; color: var(--ink-2); max-width: 62ch; }
+  .metabar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem 1.75rem;
+    font-family: var(--font-mono);
+    font-size: .72rem;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .metabar b { color: var(--ink-2); font-weight: 500; }
+
+  /* ---------- sections ---------- */
+
+  section { display: flex; flex-direction: column; gap: 1.25rem; scroll-margin-top: 2rem; }
+  .sec-head { display: flex; flex-direction: column; gap: .35rem; }
+
+  .note {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-soft);
+    padding: .85rem 1.1rem;
+    border-radius: 0 4px 4px 0;
+    color: var(--ink);
+    max-width: 78ch;
+  }
+  .note.warn { border-left-color: var(--gap); background: var(--gap-soft); }
+  .note .lab {
+    font-family: var(--font-mono);
+    font-size: .68rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: .3rem;
+    color: var(--ink-2);
+  }
+
+  /* ---------- glossary ---------- */
+
+  .glossary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(255px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  .term { background: var(--surface); padding: .95rem 1.1rem; display: flex; flex-direction: column; gap: .3rem; }
+  .term dt { font-weight: 650; font-size: .95rem; }
+  .term dd { margin: 0; color: var(--ink-2); font-size: .875rem; line-height: 1.5; }
+
+  /* ---------- code block ---------- */
+
+  pre {
+    margin: 0;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 5px;
+    padding: 1rem 1.15rem;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: .82rem;
+    line-height: 1.65;
+    color: var(--ink);
+    tab-size: 2;
+  }
+  pre .c { color: var(--ink-3); }
+  pre .k { color: var(--accent); font-weight: 600; }
+  pre .v { color: var(--gap); }
+
+  .steps { margin: 0; padding-left: 1.15rem; display: flex; flex-direction: column; gap: .3rem; max-width: 72ch; }
+  .steps li { padding-left: .25rem; }
+
+  /* ---------- matrix ---------- */
+
+  .scroll {
+    overflow-x: auto;
+    border: 1px solid var(--rule);
+    border-radius: 5px;
+    background: var(--surface);
+  }
+  table { border-collapse: collapse; width: 100%; font-size: .82rem; }
+  .matrix { min-width: 1302px; table-layout: fixed; }
+  .matrix th:nth-child(1) { width: 124px; }
+  .matrix th:nth-child(2) { width: 112px; }
+  .matrix th:nth-child(3) { width: 132px; }
+  .matrix th:nth-child(4) { width: 150px; }
+  .matrix th:nth-child(5) { width: 150px; }
+  .matrix th:nth-child(6) { width: 210px; }
+  .matrix th:nth-child(7) { width: 238px; }
+  .matrix th:nth-child(8) { width: 186px; }
+  th, td { text-align: left; vertical-align: top; padding: .7rem .8rem; border-bottom: 1px solid var(--rule-soft); overflow-wrap: break-word; }
+  thead th {
+    position: sticky;
+    top: 0;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--rule);
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: .68rem;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    line-height: 1.35;
+  }
+  tbody tr:last-child td { border-bottom: 0; }
+  td.sid {
+    border-left: 3px solid var(--rule);
+    font-family: var(--font-mono);
+    line-height: 1.35;
+  }
+  td.sid.sev-high { border-left-color: var(--crit); }
+  td.sid.sev-mid  { border-left-color: var(--gap); }
+  td.sid b { font-size: .95rem; display: block; margin-bottom: .2rem; }
+  td.sid span { color: var(--ink-3); font-size: .7rem; letter-spacing: .05em; text-transform: uppercase; }
+  td.cur { background: var(--gap-soft); }
+  td.exp { background: var(--ok-soft); }
+  td.state { color: var(--ink-2); }
+
+  .chip {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: .64rem;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    padding: .12rem .42rem;
+    border-radius: 3px;
+    border: 1px solid currentColor;
+    white-space: nowrap;
+    margin-bottom: .3rem;
+  }
+  .chip.gap  { color: var(--gap); }
+  .chip.crit { color: var(--crit); }
+  .chip.ok   { color: var(--ok); }
+  .chip.neu  { color: var(--ink-3); }
+
+  /* ---------- figures ---------- */
+
+  figure { margin: 0; display: flex; flex-direction: column; gap: .7rem; }
+  .figbox {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 5px;
+    padding: 1.1rem;
+    overflow-x: auto;
+  }
+  .figbox svg { display: block; width: 100%; min-width: 620px; height: auto; }
+  .figbox svg text { font-family: var(--font-body); }
+  .figbox svg text.m { font-family: var(--font-mono); }
+  figcaption { font-size: .82rem; color: var(--ink-2); max-width: 72ch; }
+  figcaption b { color: var(--ink); font-weight: 600; }
+
+  .figs { display: flex; flex-direction: column; gap: 2rem; }
+
+  /* ---------- scenario cards ---------- */
+
+  .scenarios { display: flex; flex-direction: column; gap: 1.5rem; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .card-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: .5rem .9rem;
+    padding: .9rem 1.15rem;
+    border-bottom: 1px solid var(--rule);
+    background: var(--surface-2);
+  }
+  .card-head .n { font-family: var(--font-mono); font-size: .78rem; color: var(--ink-3); letter-spacing: .08em; }
+  .card-head h3 { flex: 1 1 18rem; }
+  .init {
+    padding: .8rem 1.15rem;
+    border-bottom: 1px solid var(--rule-soft);
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem 1.5rem;
+    font-size: .82rem;
+    color: var(--ink-2);
+    font-family: var(--font-mono);
+  }
+  .init b { color: var(--ink); font-weight: 500; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; }
+  .pane { padding: 1rem 1.15rem 1.15rem; display: flex; flex-direction: column; gap: .6rem; }
+  .pane.cur { border-right: 1px solid var(--rule); }
+  .pane h4 { display: flex; align-items: center; gap: .5rem; }
+  .pane .dot { width: .55rem; height: .55rem; border-radius: 50%; flex: none; }
+  .pane.cur .dot { background: var(--gap); }
+  .pane.exp .dot { background: var(--ok); }
+  .pane ol, .pane ul { margin: 0; padding-left: 1.15rem; display: flex; flex-direction: column; gap: .3rem; font-size: .88rem; }
+  .pane p { font-size: .88rem; }
+  .outcome {
+    margin-top: .2rem;
+    padding: .5rem .7rem;
+    border-radius: 4px;
+    font-size: .82rem;
+    background: var(--gap-soft);
+    color: var(--ink);
+  }
+  .pane.exp .outcome { background: var(--ok-soft); }
+  .manual {
+    padding: .8rem 1.15rem;
+    border-top: 1px solid var(--rule);
+    background: var(--crit-soft);
+    font-size: .85rem;
+  }
+  .manual .lab {
+    font-family: var(--font-mono);
+    font-size: .66rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--crit);
+    margin-right: .55rem;
+  }
+  .sub { font-weight: 650; font-size: .85rem; margin-top: .35rem; }
+
+  /* ---------- gaps ---------- */
+
+  .gaps { display: flex; flex-direction: column; gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 5px; overflow: hidden; }
+  .gaprow { background: var(--surface); padding: .9rem 1.15rem; display: grid; grid-template-columns: 3.5rem 1fr 7rem; gap: .3rem 1rem; align-items: start; }
+  .gaprow .gid { font-family: var(--font-mono); font-weight: 600; color: var(--gap); font-size: .9rem; }
+  .gaprow .gwhat { font-size: .92rem; }
+  .gaprow .gwhat span { display: block; color: var(--ink-2); font-size: .85rem; margin-top: .2rem; }
+  .gaprow .gscope { font-family: var(--font-mono); font-size: .72rem; color: var(--ink-3); text-align: right; letter-spacing: .05em; }
+
+  .rule-quote {
+    border: 1px solid var(--accent);
+    border-left-width: 4px;
+    border-radius: 0 5px 5px 0;
+    background: var(--accent-soft);
+    padding: 1.1rem 1.3rem;
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    line-height: 1.5;
+    max-width: 76ch;
+  }
+
+  .checklist { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .5rem; max-width: 76ch; font-size: .92rem; }
+  .checklist li::marker { color: var(--gap); }
+
+  footer.doc {
+    border-top: 1px solid var(--rule);
+    padding-top: 1.25rem;
+    font-family: var(--font-mono);
+    font-size: .72rem;
+    color: var(--ink-3);
+    letter-spacing: .05em;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 820px) {
+    .pair { grid-template-columns: 1fr; }
+    .pane.cur { border-right: 0; border-bottom: 1px solid var(--rule); }
+    .gaprow { grid-template-columns: 3rem 1fr; }
+    .gaprow .gscope { grid-column: 2; text-align: left; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="doc">
+    <p class="eyebrow">Billing automation &middot; engineering reference</p>
+    <h1>Void &amp; Reissue: what the automation does, and where it stops</h1>
+    <p class="standfirst">
+      A V&amp;R 837 is a replacement transaction. Today the automation treats it as one only when the
+      original provider invoice is already settled &mdash; and even then, only for the invoice, never
+      for its fees. This is the current behavior, the expected behavior, and the difference between
+      them, keyed to where the original invoice sits when the V&amp;R arrives.
+    </p>
+    <div class="metabar">
+      <span><b>Scope</b> &nbsp;V&amp;R intake &rarr; invoice + fee neutralization</span>
+      <span><b>Source</b> &nbsp;Billing/Ops described behavior</span>
+      <span><b>Status</b> &nbsp;Describes current production behavior</span>
+    </div>
+  </header>
+
+  <!-- 1. VOCABULARY -->
+  <section id="vocabulary">
+    <div class="sec-head">
+      <p class="eyebrow">01 &middot; Vocabulary</p>
+      <h2>Objects in play</h2>
+      <p class="prose">The first four are distinct objects that conversation routinely collapses
+        into &ldquo;the invoice&rdquo;. Every term below is used strictly as defined here throughout
+        the document.</p>
+    </div>
+    <dl class="glossary">
+      <div class="term">
+        <dt>Provider invoice</dt>
+        <dd>The financial document created from an incoming provider claim (837). The object that
+          gets settled and paid.</dd>
+      </div>
+      <div class="term">
+        <dt>Corresponding fees</dt>
+        <dd>Fee records generated from a provider invoice. They carry their own status
+          (Pending / Pay / Settled&ndash;Paid) and their own payment eligibility.</dd>
+      </div>
+      <div class="term">
+        <dt>Original invoice</dt>
+        <dd>The provider invoice referenced by the incoming V&amp;R via <code>NTE*ADD</code>. The
+          version being superseded.</dd>
+      </div>
+      <div class="term">
+        <dt>Replacement invoice</dt>
+        <dd>The provider invoice carried by the incoming V&amp;R 837. The version that should
+          supersede the original.</dd>
+      </div>
+      <div class="term">
+        <dt>Globo</dt>
+        <dd>The system the invoice is uploaded into, where it moves Pending &rarr; Pay &rarr;
+          Settled/Paid, and where a void or refund is applied.</dd>
+      </div>
+      <div class="term">
+        <dt>Missing GOP / Missing Claim UI</dt>
+        <dd>Pre-Globo intake queues in the user interface. An item here is not yet in Globo; a user
+          creates a GOP and enters the required ID to move it forward.</dd>
+      </div>
+      <div class="term">
+        <dt>Automatic Refund</dt>
+        <dd>The existing automated reversal the V&amp;R automation performs on a <em>settled</em>
+          provider invoice. It acts on the provider invoice only.</dd>
+      </div>
+      <div class="term">
+        <dt>Manual intervention</dt>
+        <dd>Any action the Billing team performs by hand because the automation does not perform
+          it.</dd>
+      </div>
+    </dl>
+  </section>
+
+  <!-- 2. TRIGGER -->
+  <section id="trigger">
+    <div class="sec-head">
+      <p class="eyebrow">02 &middot; Trigger and identification</p>
+      <h2>How the original invoice is found</h2>
+      <p class="prose"><b>Trigger:</b> an incoming 837 that contains Void &amp; Reissue information.
+        The automation identifies the original invoice from the <code>NTE*ADD</code> segment.</p>
+    </div>
+
+<pre><span class="c">// 837 segment</span>
+NTE*ADD*Rplcmnt fr Voided Clm <span class="v">13630117</span>~</pre>
+
+    <ol class="steps">
+      <li>Extract the referenced claim value &mdash; <code>13630117</code>.</li>
+      <li>Search for the InvoiceID against which that value was registered.</li>
+      <li>Use that InvoiceID to locate the original invoice.</li>
+    </ol>
+
+    <p class="prose">The reference arrives on every V&amp;R, independent of where the original
+      invoice currently sits. What differs today is <b>what the automation does with it</b> once the
+      original has been located.</p>
+
+    <div class="note warn">
+      <span class="lab">Requires technical confirmation</span>
+      In Scenarios 3 and 4 the original is not neutralized. It is not established from the described
+      behavior whether the <code>NTE*ADD</code> lookup (a) is not executed, (b) executes but fails to
+      resolve for a non-settled or not-yet-uploaded original, or (c) resolves successfully but has no
+      downstream action wired to it. The fix differs per case.
+    </div>
+  </section>
+
+  <!-- 3. MATRIX -->
+  <section id="matrix">
+    <div class="sec-head">
+      <p class="eyebrow">03 &middot; Main view</p>
+      <h2>Scenario comparison matrix</h2>
+      <p class="prose">Rows are keyed by the lifecycle state of the original invoice when the
+        V&amp;R arrives &mdash; the variable that determines everything else. Left stripe marks
+        exposure: <span class="chip crit">duplicate payment possible</span>
+        <span class="chip gap">value not recovered</span></p>
+    </div>
+
+    <div class="scroll">
+      <table class="matrix">
+        <thead>
+          <tr>
+            <th scope="col">Scenario</th>
+            <th scope="col">Original invoice state</th>
+            <th scope="col">Corresponding fees</th>
+            <th scope="col">Current &mdash; original invoice</th>
+            <th scope="col">Current &mdash; fees</th>
+            <th scope="col">Current &mdash; replacement invoice</th>
+            <th scope="col">Expected</th>
+            <th scope="col">Manual intervention today</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="sid sev-mid"><b>S1</b><span>Paid / fees paid</span></td>
+            <td class="state">Settled / Paid in Globo</td>
+            <td class="state">Settled / Paid</td>
+            <td class="cur"><span class="chip ok">handled</span><br>Identified via <code>NTE*ADD</code>,
+              <b>Automatic Refund</b> applied.</td>
+            <td class="cur"><span class="chip gap">gap</span><br><b>Not refunded.</b> Fees remain
+              paid. Confirmed with the Billing team.</td>
+            <td class="cur">Can be processed after the refund.</td>
+            <td class="exp">Refund the provider invoice <b>and</b> automatically refund/void the
+              corresponding fees. The original financial transaction and its fees are reversed
+              together.</td>
+            <td>Billing manually refunds the fees associated with the original invoice.</td>
+          </tr>
+          <tr>
+            <td class="sid sev-high"><b>S2</b><span>Paid / fees unpaid</span></td>
+            <td class="state">Settled / Paid in Globo</td>
+            <td class="state">Pending or Pay &mdash; created, not settled</td>
+            <td class="cur"><span class="chip ok">handled</span><br>Identified, <b>Automatic
+              Refund</b> applied.</td>
+            <td class="cur"><span class="chip crit">gap</span><br><b>Untouched</b> in Pending/Pay
+              &mdash; still eligible for payment against a voided invoice.</td>
+            <td class="cur">Can be processed after the refund.</td>
+            <td class="exp">Refund the provider invoice <b>and</b> automatically void any fees still
+              in Pending/Pay &mdash; they belong to the superseded version.</td>
+            <td>Billing manually identifies and voids the fees created for the original invoice.</td>
+          </tr>
+          <tr>
+            <td class="sid sev-high"><b>S3</b><span>Live in Globo</span></td>
+            <td class="state">Pending or Pay, already in Globo</td>
+            <td class="state">&mdash; not part of the described flow</td>
+            <td class="cur"><span class="chip crit">gap</span><br><b>Not voided.</b> Remains active
+              in Globo.</td>
+            <td class="cur">&mdash;</td>
+            <td class="cur"><span class="chip crit">gap</span><br>Treated as a <b>new invoice</b>:
+              lands in Missing GOP / Missing Claim, user creates a GOP, enters the required ID,
+              uploads to Globo. The upload does <b>not</b> void the original &mdash; both versions
+              coexist in Globo.</td>
+            <td class="exp">Identify the original via the V&amp;R reference &rarr; automatically void
+              it &rarr; create/upload the replacement &rarr; only the replacement is valid for
+              further processing/payment.</td>
+            <td>Billing manually voids the original invoice in Globo to prevent duplicate
+              payment.</td>
+          </tr>
+          <tr>
+            <td class="sid sev-high"><b>S4</b><span>Still in intake UI</span></td>
+            <td class="state">Not yet in Globo &mdash; in Missing GOP and/or Missing Claim UI</td>
+            <td class="state">&mdash; not part of the described flow</td>
+            <td class="cur"><span class="chip crit">gap</span><br><b>No automated connection</b>
+              between the original UI item and the replacement.</td>
+            <td class="cur">&mdash;</td>
+            <td class="cur"><span class="chip crit">gap</span><br>Appears in the UI as another new
+              invoice. Both versions remain available for processing.</td>
+            <td class="exp">Recognize from the V&amp;R reference that the incoming invoice supersedes
+              an item already in intake. <b>Still in UI:</b> cancel/remove the original from
+              processing. <b>Already in Globo:</b> void the original. Replacement becomes the active
+              version; both versions must never progress independently.</td>
+            <td>Only if Billing recognizes the V&amp;R: manually remove the original UI item, or
+              &mdash; if it already reached Globo &mdash; manually void it there.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="prose"><b>Severity read.</b> S1 leaves value unrecovered &mdash; a paid fee for a
+      refunded invoice. S2, S3 and S4 leave a <em>payable</em> artifact alive &mdash; unpaid fees, or
+      an entire second invoice &mdash; so the exposure is caught only when a human notices.</p>
+  </section>
+
+  <!-- 4. FIGURES -->
+  <section id="lifecycle">
+    <div class="sec-head">
+      <p class="eyebrow">04 &middot; Lifecycle</p>
+      <h2>Where the V&amp;R lands, and what it reaches</h2>
+      <p class="prose">Same geometry in both figures: the original invoice's path across intake and
+        Globo, and the fees that come off it. What changes is which arrows exist.</p>
+    </div>
+
+    <div class="figs">
+
+      <figure>
+        <div class="figbox">
+          <svg viewBox="0 0 1000 330" role="img" aria-label="Current behavior: the V and R 837 reaches only a settled original invoice, via Automatic Refund. No link exists to an original still in the intake UI or still Pending or Pay in Globo, and the corresponding fees are not reversed.">
+            <defs>
+              <marker id="cur-gap" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--gap)"/>
+              </marker>
+              <marker id="cur-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--accent)"/>
+              </marker>
+              <marker id="cur-step" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--ink-3)"/>
+              </marker>
+            </defs>
+
+            <!-- V&R source -->
+            <rect x="340" y="14" width="260" height="46" rx="4" fill="var(--surface-2)" stroke="var(--ink-2)" stroke-width="1"/>
+            <text x="470" y="34" text-anchor="middle" font-size="13" font-weight="600" fill="var(--ink)">Incoming V&amp;R 837</text>
+            <text x="470" y="50" text-anchor="middle" class="m" font-size="11" fill="var(--ink-2)">NTE*ADD reference</text>
+
+            <!-- distribution bus -->
+            <path d="M 470 60 L 470 106" stroke="var(--ink-3)" stroke-width="1.2" fill="none"/>
+            <path d="M 155 106 L 930 106" stroke="var(--ink-3)" stroke-width="1.2" fill="none"/>
+
+            <!-- drops onto lifecycle states -->
+            <path d="M 155 106 L 155 156" stroke="var(--gap)" stroke-width="1.6" stroke-dasharray="5 4" fill="none" marker-end="url(#cur-gap)"/>
+            <path d="M 455 106 L 455 156" stroke="var(--gap)" stroke-width="1.6" stroke-dasharray="5 4" fill="none" marker-end="url(#cur-gap)"/>
+            <path d="M 770 106 L 770 156" stroke="var(--accent)" stroke-width="2" fill="none" marker-end="url(#cur-ink)"/>
+            <text x="163" y="132" class="m" font-size="11" fill="var(--gap)">no link</text>
+            <text x="463" y="132" class="m" font-size="11" fill="var(--gap)">no link</text>
+            <text x="778" y="132" class="m" font-size="11" fill="var(--accent)">Automatic Refund</text>
+
+            <!-- fee rail -->
+            <path d="M 930 106 L 930 284 L 904 284" stroke="var(--gap)" stroke-width="1.6" stroke-dasharray="5 4" fill="none" marker-end="url(#cur-gap)"/>
+            <text x="922" y="246" text-anchor="end" class="m" font-size="11" fill="var(--gap)">fees not reversed</text>
+
+            <!-- lifecycle states -->
+            <rect x="40" y="160" width="230" height="64" rx="4" fill="var(--surface)" stroke="var(--rule)" stroke-width="1.5"/>
+            <text x="155" y="186" text-anchor="middle" font-size="12.5" font-weight="600" fill="var(--ink)">Missing GOP / Missing Claim</text>
+            <text x="155" y="204" text-anchor="middle" class="m" font-size="11" fill="var(--ink-2)">intake UI &mdash; not in Globo</text>
+
+            <rect x="340" y="160" width="230" height="64" rx="4" fill="var(--surface)" stroke="var(--rule)" stroke-width="1.5"/>
+            <text x="455" y="186" text-anchor="middle" font-size="12.5" font-weight="600" fill="var(--ink)">Globo</text>
+            <text x="455" y="204" text-anchor="middle" class="m" font-size="11" fill="var(--ink-2)">Pending / Pay</text>
+
+            <rect x="640" y="160" width="260" height="64" rx="4" fill="var(--surface)" stroke="var(--rule)" stroke-width="1.5"/>
+            <text x="770" y="186" text-anchor="middle" font-size="12.5" font-weight="600" fill="var(--ink)">Globo</text>
+            <text x="770" y="204" text-anchor="middle" class="m" font-size="11" fill="var(--ink-2)">Settled / Paid</text>
+
+            <!-- progression -->
+            <path d="M 274 192 L 332 192" stroke="var(--ink-3)" stroke-width="1.2" fill="none" marker-end="url(#cur-step)"/>
+            <text x="303" y="182" text-anchor="middle" class="m" font-size="10" fill="var(--ink-3)">upload</text>
+            <path d="M 574 192 L 632 192" stroke="var(--ink-3)" stroke-width="1.2" fill="none" marker-end="url(#cur-step)"/>
+            <text x="603" y="182" text-anchor="middle" class="m" font-size="10" fill="var(--ink-3)">settle</text>
+
+            <!-- fees -->
+            <path d="M 770 226 L 770 254" stroke="var(--ink-3)" stroke-width="1.2" fill="none" marker-end="url(#cur-step)"/>
+            <text x="762" y="246" text-anchor="end" class="m" font-size="10" fill="var(--ink-3)">generates</text>
+            <rect x="640" y="258" width="260" height="52" rx="4" fill="var(--surface)" stroke="var(--rule)" stroke-width="1.5"/>
+            <text x="770" y="280" text-anchor="middle" font-size="12.5" font-weight="600" fill="var(--ink)">Corresponding fees</text>
+            <text x="770" y="297" text-anchor="middle" class="m" font-size="11" fill="var(--ink-2)">Paid (S1) &nbsp;&middot;&nbsp; Pending / Pay (S2)</text>
+          </svg>
+        </div>
+        <figcaption><b>Current.</b> The <code>NTE*ADD</code> reference produces an action in one
+          place only: Automatic Refund on a settled provider invoice. Against an original still in
+          intake (S4) or still Pending/Pay in Globo (S3) the replacement enters as an unrelated new
+          invoice, and the refund never propagates to the fees (S1, S2).</figcaption>
+      </figure>
+
+      <figure>
+        <div class="figbox">
+          <svg viewBox="0 0 1000 330" role="img" aria-label="Expected behavior: the V and R 837 dispatches on the lifecycle state of the original, cancelling the intake item, voiding a Pending or Pay invoice, or refunding a settled invoice, and in the settled case also reversing the corresponding fees.">
+            <defs>
+              <marker id="exp-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--accent)"/>
+              </marker>
+              <marker id="exp-step" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--ink-3)"/>
+              </marker>
+            </defs>
+
+            <!-- V&R source -->
+            <rect x="340" y="14" width="260" height="46" rx="4" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
+            <text x="470" y="34" text-anchor="middle" font-size="13" font-weight="600" fill="var(--ink)">Incoming V&amp;R 837</text>
+            <text x="470" y="50" text-anchor="middle" class="m" font-size="11" fill="var(--ink-2)">NTE*ADD &rarr; locate original</text>
+
+            <!-- dispatch bus -->
+            <path d="M 470 60 L 470 106" stroke="var(--accent)" stroke-width="2" fill="none"/>
+            <path d="M 155 106 L 930 106" stroke="var(--accent)" stroke-width="2" fill="none"/>
+
+            <!-- dispatch by lifecycle state -->
+            <path d="M 155 106 L 155 156" stroke="var(--accent)" stroke-width="2" fill="none" marker-end="url(#exp-ink)"/>
+            <path d="M 455 106 L 455 156" stroke="var(--accent)" stroke-width="2" fill="none" marker-end="url(#exp-ink)"/>
+            <path d="M 770 106 L 770 156" stroke="var(--accent)" stroke-width="2" fill="none" marker-end="url(#exp-ink)"/>
+            <text x="163" y="132" class="m" font-size="11" fill="var(--accent)">cancel item</text>
+            <text x="463" y="132" class="m" font-size="11" fill="var(--accent)">void original</text>
+            <text x="778" y="132" class="m" font-size="11" fill="var(--accent)">Automatic Refund</text>
+
+            <!-- fee rail -->
+            <path d="M 930 106 L 930 284 L 904 284" stroke="var(--accent)" stroke-width="2" fill="none" marker-end="url(#exp-ink)"/>
+            <text x="922" y="246" text-anchor="end" class="m" font-size="11" fill="var(--accent)">refund / void fees</text>
+
+            <!-- lifecycle states -->
+            <rect x="40" y="160" width="230" height="64" rx="4" fill="var(--surface)" stroke="var(--rule)" stroke-width="1.5"/>
+            <text x="155" y="186" text-anchor="middle" font-size="12.5" font-weight="600" fill="var(--ink)">Missing GOP / Missing Claim</text>
+            <text x="155" y="204" text-anchor="middle" class="m" font-size="11" fill="var(--ink-2)">intake UI &mdash; not in Globo</text>
+
+            <rect x="340" y="160" width="230" height="64" rx="4" fill="var(--surface)" stroke="var(--rule)" stroke-width="1.5"/>
+            <text x="455" y="186" text-anchor="middle" font-size="12.5" font-weight="600" fill="var(--ink)">Globo</text>
+            <text x="455" y="204" text-anchor="middle" class="m" font-size="11" fill="var(--ink-2)">Pending / Pay</text>
+
+            <rect x="640" y="160" width="260" height="64" rx="4" fill="var(--surface)" stroke="var(--rule)" stroke-width="1.5"/>
+            <text x="770" y="186" text-anchor="middle" font-size="12.5" font-weight="600" fill="var(--ink)">Globo</text>
+            <text x="770" y="204" text-anchor="middle" class="m" font-size="11" fill="var(--ink-2)">Settled / Paid</text>
+
+            <!-- progression -->
+            <path d="M 274 192 L 332 192" stroke="var(--ink-3)" stroke-width="1.2" fill="none" marker-end="url(#exp-step)"/>
+            <text x="303" y="182" text-anchor="middle" class="m" font-size="10" fill="var(--ink-3)">upload</text>
+            <path d="M 574 192 L 632 192" stroke="var(--ink-3)" stroke-width="1.2" fill="none" marker-end="url(#exp-step)"/>
+            <text x="603" y="182" text-anchor="middle" class="m" font-size="10" fill="var(--ink-3)">settle</text>
+
+            <!-- fees -->
+            <path d="M 770 226 L 770 254" stroke="var(--ink-3)" stroke-width="1.2" fill="none" marker-end="url(#exp-step)"/>
+            <text x="762" y="246" text-anchor="end" class="m" font-size="10" fill="var(--ink-3)">generates</text>
+            <rect x="640" y="258" width="260" height="52" rx="4" fill="var(--surface)" stroke="var(--rule)" stroke-width="1.5"/>
+            <text x="770" y="280" text-anchor="middle" font-size="12.5" font-weight="600" fill="var(--ink)">Corresponding fees</text>
+            <text x="770" y="297" text-anchor="middle" class="m" font-size="11" fill="var(--ink-2)">Paid (S1) &nbsp;&middot;&nbsp; Pending / Pay (S2)</text>
+          </svg>
+        </div>
+        <figcaption><b>Expected.</b> The reference resolves once, then dispatches on the original's
+          lifecycle state &mdash; cancel the intake item, void the live invoice, or refund the
+          settled invoice &mdash; and the settled path carries through to the fees. In every branch
+          the replacement is left as the only active version.</figcaption>
+      </figure>
+
+    </div>
+
+    <div class="note">
+      <span class="lab">Reading the dispatch</span>
+      The branch is chosen by <b>where the original is when the V&amp;R arrives</b>, not by anything
+      in the replacement. Fee handling attaches to the settled branch, and then splits again on fee
+      status: paid fees are refunded, Pending/Pay fees are voided.
+    </div>
+  </section>
+
+  <!-- 5. SCENARIOS -->
+  <section id="scenarios">
+    <div class="sec-head">
+      <p class="eyebrow">05 &middot; Detail</p>
+      <h2>Current vs. expected, per scenario</h2>
+    </div>
+
+    <div class="scenarios">
+
+      <!-- S1 -->
+      <article class="card">
+        <div class="card-head">
+          <span class="n">S1</span>
+          <h3>Provider invoice and corresponding fees already settled</h3>
+          <span class="chip gap">value not recovered</span>
+        </div>
+        <div class="init">
+          <span><b>Provider invoice:</b> Settled / Paid</span>
+          <span><b>Corresponding fees:</b> Settled / Paid</span>
+        </div>
+        <div class="pair">
+          <div class="pane cur">
+            <h4><span class="dot"></span>Current behavior</h4>
+            <ol>
+              <li>Automation reads the <code>NTE*ADD</code> segment.</li>
+              <li>Automation identifies the original invoice.</li>
+              <li>Automation performs <b>Automatic Refund</b> on the provider invoice.</li>
+              <li>The replacement invoice can then be processed.</li>
+              <li>The corresponding fees are <b>not refunded</b>.</li>
+            </ol>
+            <p class="outcome">Confirmed with the Billing team.</p>
+          </div>
+          <div class="pane exp">
+            <h4><span class="dot"></span>Expected behavior</h4>
+            <p>When the original provider invoice is refunded because of a V&amp;R, the corresponding
+              fees generated from that invoice should also be automatically refunded/voided.</p>
+            <p class="outcome">The original financial transaction and its associated fees are
+              reversed together.</p>
+          </div>
+        </div>
+        <div class="manual"><span class="lab">Manual today</span>The Billing team must manually
+          refund the fees associated with the original invoice.</div>
+      </article>
+
+      <!-- S2 -->
+      <article class="card">
+        <div class="card-head">
+          <span class="n">S2</span>
+          <h3>Provider invoice settled, fees created but not yet settled</h3>
+          <span class="chip crit">duplicate payment possible</span>
+        </div>
+        <div class="init">
+          <span><b>Provider invoice:</b> Settled / Paid</span>
+          <span><b>Corresponding fees:</b> Pending or Pay</span>
+        </div>
+        <div class="pair">
+          <div class="pane cur">
+            <h4><span class="dot"></span>Current behavior</h4>
+            <ol>
+              <li>Automation identifies the original provider invoice.</li>
+              <li>Automation performs <b>Automatic Refund</b> on the provider invoice.</li>
+              <li>The corresponding fees remain untouched in Pending or Pay status.</li>
+            </ol>
+            <p class="outcome">Fees relating to an invoice that has already been voided can remain
+              eligible for payment.</p>
+          </div>
+          <div class="pane exp">
+            <h4><span class="dot"></span>Expected behavior</h4>
+            <p>When the original provider invoice is voided/refunded, any corresponding fees still in
+              Pending or Pay status should also be automatically voided.</p>
+            <p class="outcome">Those fees are no longer valid &mdash; they belong to the superseded
+              version of the provider invoice.</p>
+          </div>
+        </div>
+        <div class="manual"><span class="lab">Manual today</span>The Billing team must manually
+          identify and void the fees created for the original invoice.</div>
+      </article>
+
+      <!-- S3 -->
+      <article class="card">
+        <div class="card-head">
+          <span class="n">S3</span>
+          <h3>Original provider invoice still Pending or Pay in Globo</h3>
+          <span class="chip crit">duplicate payment possible</span>
+        </div>
+        <div class="init">
+          <span><b>Provider invoice:</b> Pending or Pay</span>
+          <span><b>Location:</b> already in Globo</span>
+          <span><b>Settlement:</b> not yet settled</span>
+        </div>
+        <div class="pair">
+          <div class="pane cur">
+            <h4><span class="dot"></span>Current behavior</h4>
+            <ol>
+              <li>The automation does <b>not</b> treat the incoming invoice as a replacement of the
+                existing invoice.</li>
+              <li>The replacement appears in the UI under <b>Missing GOP</b> or <b>Missing
+                Claim</b>, behaving as a new invoice.</li>
+              <li>The user must create a new GOP in the case.</li>
+              <li>The user enters the required ID in the UI.</li>
+              <li>The replacement invoice is uploaded into Globo.</li>
+              <li>Uploading the replacement does <b>not</b> void the original.</li>
+            </ol>
+            <p class="outcome">Both the original and the replacement invoice can exist in Globo
+              simultaneously.</p>
+          </div>
+          <div class="pane exp">
+            <h4><span class="dot"></span>Expected behavior</h4>
+            <ol>
+              <li>Automation identifies the original invoice through the V&amp;R reference.</li>
+              <li>Automation automatically voids the original invoice.</li>
+              <li>Automation creates/uploads the replacement version.</li>
+              <li>Only the replacement invoice remains valid for further processing/payment.</li>
+            </ol>
+            <p class="outcome">One live invoice per claim at all times.</p>
+          </div>
+        </div>
+        <div class="manual"><span class="lab">Manual today</span>The Billing team must manually void
+          the original invoice to prevent duplicate payment.</div>
+      </article>
+
+      <!-- S4 -->
+      <article class="card">
+        <div class="card-head">
+          <span class="n">S4</span>
+          <h3>Original invoice has not yet reached Globo</h3>
+          <span class="chip crit">duplicate payment possible</span>
+        </div>
+        <div class="init">
+          <span><b>Provider invoice:</b> not yet uploaded into Globo</span>
+          <span><b>Location:</b> Missing GOP and/or Missing Claim UI</span>
+        </div>
+        <div class="pair">
+          <div class="pane cur">
+            <h4><span class="dot"></span>Current behavior</h4>
+            <ol>
+              <li>The replacement appears in the UI as another new invoice.</li>
+              <li>There is <b>no automated connection</b> between the original UI item and the
+                replacement V&amp;R item.</li>
+              <li>Both versions can therefore remain available for processing.</li>
+            </ol>
+            <p class="sub">If the Billing team recognizes the new invoice as a V&amp;R:</p>
+            <ul>
+              <li>original still in Missing GOP / Missing Claim UI &rarr; the team manually removes
+                the original item;</li>
+              <li>original already uploaded into Globo by then &rarr; the team must manually void it
+                in Globo.</li>
+            </ul>
+          </div>
+          <div class="pane exp">
+            <h4><span class="dot"></span>Expected behavior</h4>
+            <p>The V&amp;R reference should allow the system to identify that the incoming invoice
+              supersedes an invoice already present in the intake process.</p>
+            <p class="sub">If the original is still in the Missing GOP / Missing Claim UI:</p>
+            <ol>
+              <li>The original is automatically cancelled/removed from processing.</li>
+              <li>The replacement becomes the active version.</li>
+            </ol>
+            <p class="sub">If the original has moved into Globo:</p>
+            <ol>
+              <li>The original is automatically voided.</li>
+              <li>The replacement becomes the active version.</li>
+            </ol>
+            <p class="outcome">The system prevents both invoice versions from progressing
+              independently.</p>
+          </div>
+        </div>
+        <div class="manual"><span class="lab">Manual today</span>Manual removal of the original UI
+          item, or a manual void in Globo &mdash; and only when a human recognizes the incoming
+          invoice as a V&amp;R.</div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- 6. GAPS -->
+  <section id="gaps">
+    <div class="sec-head">
+      <p class="eyebrow">06 &middot; For the developer</p>
+      <h2>Gap summary</h2>
+    </div>
+
+    <div class="gaps">
+      <div class="gaprow">
+        <span class="gid">G1</span>
+        <span class="gwhat">Fee reversal is not chained to invoice reversal.
+          <span>Automatic Refund acts on the provider invoice only. S1: fees stay paid and
+            unrecovered. S2: fees stay payable against a voided invoice.</span></span>
+        <span class="gscope">S1 &middot; S2</span>
+      </div>
+      <div class="gaprow">
+        <span class="gid">G2</span>
+        <span class="gwhat">No void path for a non-settled original.
+          <span>A V&amp;R against an original sitting in Globo at Pending/Pay does not void it, so
+            two live invoices exist for the same claim.</span></span>
+        <span class="gscope">S3</span>
+      </div>
+      <div class="gaprow">
+        <span class="gid">G3</span>
+        <span class="gwhat">No linkage at intake.
+          <span>A V&amp;R against an original still in Missing GOP / Missing Claim is not connected
+            to that UI item; two independent items progress and nothing stops both reaching
+            Globo.</span></span>
+        <span class="gscope">S4</span>
+      </div>
+      <div class="gaprow">
+        <span class="gid">G4</span>
+        <span class="gwhat">The reversal action is not selected by lifecycle state.
+          <span>The only wired outcome is Automatic Refund on a settled invoice; the other states
+            have no outcome, so the <code>NTE*ADD</code> reference is effectively unused outside the
+            settled case.</span></span>
+        <span class="gscope">S3 &middot; S4</span>
+      </div>
+    </div>
+
+    <p class="prose"><b>Root cause, stated once:</b> the automation implements V&amp;R as
+      <em>&ldquo;refund a settled provider invoice&rdquo;</em>, not as <em>&ldquo;replace whatever
+      version currently exists, wherever it currently sits.&rdquo;</em> There is no dispatch on the
+      original's lifecycle state, and no propagation from the invoice reversal to its dependent fee
+      records.</p>
+
+    <div class="rule-quote">
+      A V&amp;R should behave as a <b>replacement transaction, not as an independent new
+      invoice.</b> Once the replacement is identified through the <span class="mono">NTE*ADD</span>
+      reference, the system should automatically neutralize the previous version wherever it
+      currently sits in the workflow, including any associated fees where applicable.
+    </div>
+  </section>
+
+  <!-- 7. RULE -->
+  <section id="rule">
+    <div class="sec-head">
+      <p class="eyebrow">07 &middot; Target logic</p>
+      <h2>Potential functional rule</h2>
+      <p class="prose">Developer-oriented expression of the desired behavior. Pseudocode, not an
+        implementation contract.</p>
+    </div>
+
+<pre><span class="k">IF</span> incoming 837 is identified as V&amp;R
+
+  &rarr; <span class="k">locate</span> original invoice using NTE*ADD reference
+        extract claim ref &rarr; resolve InvoiceID &rarr; locate original invoice
+
+  &rarr; <span class="k">determine</span> current lifecycle state of original
+
+  &rarr; <span class="k">neutralize</span> original invoice appropriately
+        state = <span class="v">Missing GOP / Missing Claim UI</span>  &rarr; cancel / remove item from processing
+        state = <span class="v">Globo, Pending or Pay</span>           &rarr; void original invoice
+        state = <span class="v">Globo, Settled / Paid</span>           &rarr; Automatic Refund on provider invoice
+
+  &rarr; <span class="k">neutralize</span> associated fees where applicable
+        fees  = <span class="v">Settled / Paid</span>                  &rarr; refund / void fees
+        fees  = <span class="v">Pending or Pay</span>                  &rarr; void fees
+
+  &rarr; <span class="k">process</span> replacement as the only active version
+
+  &rarr; <span class="k">prevent</span> duplicate payment exposure
+        original and replacement must never both be eligible for payment</pre>
+  </section>
+
+  <!-- 8. OPEN -->
+  <section id="open">
+    <div class="sec-head">
+      <p class="eyebrow">08 &middot; Before requirements are frozen</p>
+      <h2>Requires technical confirmation</h2>
+      <p class="prose">These are <b>not</b> described behavior. Nothing here should be written into
+        requirements until it is answered.</p>
+    </div>
+    <ol class="checklist">
+      <li>Whether the <code>NTE*ADD</code> lookup runs, resolves, or is simply not acted on for
+        non-settled and not-yet-uploaded originals.</li>
+      <li>At which lifecycle point corresponding fees are generated from a provider invoice. S2
+        confirms fees can exist while unsettled; the creation trigger itself is not described.</li>
+      <li>Whether &ldquo;refund&rdquo; and &ldquo;void&rdquo; on fees are distinct operations in the
+        fee model, or one operation whose effect depends on fee status.</li>
+      <li>Whether Missing GOP and Missing Claim are one item or two separate items for the same
+        invoice &mdash; and therefore whether cancellation must target both.</li>
+      <li>Behavior when the <code>NTE*ADD</code> reference resolves to no invoice, to more than one
+        invoice, or to an invoice already voided by an earlier V&amp;R (chained V&amp;R).</li>
+      <li>Whether the replacement must be blocked from processing if neutralizing the original fails
+        partway through &mdash; i.e. whether the sequence needs to be atomic.</li>
+    </ol>
+  </section>
+
+  <footer class="doc">
+    Void &amp; Reissue automation &mdash; current behavior reference<br>
+    Behavior as described by Billing/Operations. Items marked &ldquo;requires technical
+    confirmation&rdquo; are open questions, not documented behavior.
+  </footer>
+
+</div>
